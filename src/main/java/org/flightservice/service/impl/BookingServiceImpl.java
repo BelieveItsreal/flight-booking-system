@@ -52,7 +52,7 @@ public class BookingServiceImpl implements BookingService{
 
         User user = securityUtils.getCurrentUser();
 
-        FlightSeat seat = flightSeatRepository.findByFlightIdAndSeatClass(request.getFlightId(), request.getSeatClass())
+        FlightSeat seat = flightSeatRepository.findByFlightIdAndSeatClassForUpdate(request.getFlightId(), request.getSeatClass())
         .orElseThrow(()-> new SeatClassNotFoundException("Seat class not available"));
 
         if (seat.getAvailableSeats() <= 0) {

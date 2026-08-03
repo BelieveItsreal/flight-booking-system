@@ -100,7 +100,7 @@ public class BookingServiceImplTest {
     void createBooking_sucess(){
         when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
         when(securityUtils.getCurrentUser()).thenReturn(user);
-        when(flightSeatRepository.findByFlightIdAndSeatClass(1L,SeatClass.ECONOMY)).thenReturn(Optional.of(seat));
+        when(flightSeatRepository.findByFlightIdAndSeatClassForUpdate(1L,SeatClass.ECONOMY)).thenReturn(Optional.of(seat));
         when(bookingRepository.save(any(Booking .class))).thenReturn(booking);
         when(bookingMapper.toDto(booking)).thenReturn(responseDTO);
 
@@ -125,7 +125,7 @@ public class BookingServiceImplTest {
     void createBooking_seatclassNotFound_throwsException(){
         when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
         when(securityUtils.getCurrentUser()).thenReturn(user);
-        when(flightSeatRepository.findByFlightIdAndSeatClass(1L, SeatClass.ECONOMY)).thenReturn(Optional.empty());
+        when(flightSeatRepository.findByFlightIdAndSeatClassForUpdate(1L, SeatClass.ECONOMY)).thenReturn(Optional.empty());
         assertThatThrownBy(()-> bookingService.createBooking(request))
             .isInstanceOfAny(SeatClassNotFoundException.class)
             .hasMessage("Seat class not available");
@@ -136,7 +136,7 @@ public class BookingServiceImplTest {
         seat.setAvailableSeats(0);
         when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
         when(securityUtils.getCurrentUser()).thenReturn(user);
-        when(flightSeatRepository.findByFlightIdAndSeatClass(1L, SeatClass.ECONOMY)).thenReturn(Optional.of(seat));
+        when(flightSeatRepository.findByFlightIdAndSeatClassForUpdate(1L, SeatClass.ECONOMY)).thenReturn(Optional.of(seat));
 
         assertThatThrownBy(() -> bookingService.createBooking(request))
             .isInstanceOf(SeatClassNotFoundException.class)
