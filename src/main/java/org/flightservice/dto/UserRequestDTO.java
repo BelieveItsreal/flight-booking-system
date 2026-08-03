@@ -15,6 +15,6 @@ public class UserRequestDTO {
     @NotNull
     @Email
     private String email;
-    @NotNull(message = "Passowrd can not be null")
+    @NotNull(message = "Password can not be null")
     private String password;
 }
