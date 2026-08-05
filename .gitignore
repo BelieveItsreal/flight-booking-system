@@ -39,3 +39,4 @@ setting.json
 
 ### Secrets ###
 .env
+application.properties
