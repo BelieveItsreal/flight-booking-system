@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package flightBooking;
+
+option java_package = "org.flightBooking.proto";
+option java_multiple_files = true;
+option java_outer_classname = "FlightSeatProto";
+
+enum SeatClass{
+  SEAT_CLASS_UNSPECIFIED = 0;
+  ECONOMY = 1;
+  BUSINESS = 2;
+}
+
+message ReserveSeatRequest{
+  int64 flight_id = 1;
+  int64  flight_seat_id = 2;
+  SeatClass seat_class = 3;
+}
+
+message ReserveSeatResponse{
+  bool success = 1;
+  string message = 2;
+  double price_at_booking = 3;
+}
+
+message ReleaseSeatRequest{
+  int64 flight_seat_id = 1;
+}
+
+message ReleaseSeatResponse{
+  bool success = 1;
+  string message = 2;
+}
+
+message GetFlightRequest{
+  int64 flight_id = 1;
+}
+
+message FlightDetails{
+  int64 id = 1;
+  string flight_number = 2;
+  string source_code = 3;
+  string source_city = 4;
+  string destination_code = 5;
+  string destination_city = 6;
+  int64 departure_time_epoch_millis = 7;
+  int64 arrival_time_epoch_millis = 8;
+}
+
+service FlightSeatService{
+  rpc ReserveSeat(ReserveSeatRequest) returns (ReserveSeatRequest);
+  rpc ReleaseSeat(ReleaseSeatRequest) returns (ReleaseSeatResponse);
+  rpc GetFlight(GetFlightRequest) returns (FlightDetails);
+}
