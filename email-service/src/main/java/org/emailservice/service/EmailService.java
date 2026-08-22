@@ -2,6 +2,7 @@ package org.emailservice.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.emailservice.dto.BookingConfirmationRequest;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
     private final JavaMailSender mailSender;
+    @Value("${spring.mail.username}")
+    private String fromEmail;
     public EmailService(JavaMailSender mailSender){
         this.mailSender = mailSender;
     }
@@ -18,6 +21,7 @@ public class EmailService {
         try {
             MimeMessage mineMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mineMessage, "UTF-8");
+            helper.setFrom(fromEmail);
             helper.setTo(request.getToEmail());
             helper.setSubject("Booking Confirmation - " + request.getBookingId());
             helper.setText(buildBookingConfirmationHtml(request), true);
