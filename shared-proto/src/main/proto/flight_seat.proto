@@ -49,7 +49,7 @@ message FlightDetails{
 }
 
 service FlightSeatService{
-  rpc ReserveSeat(ReserveSeatRequest) returns (ReserveSeatRequest);
+  rpc ReserveSeat(ReserveSeatRequest) returns (ReserveSeatResponse);
   rpc ReleaseSeat(ReleaseSeatRequest) returns (ReleaseSeatResponse);
   rpc GetFlight(GetFlightRequest) returns (FlightDetails);
 }

@@ -58,6 +58,16 @@ services:
       postgres: { condition: service_healthy }
     networks: [ backend ]
 
+  email-service:
+    build: ./email-service
+    container_name: email-service
+    ports: ["8084:8084"]
+    environment:
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_APP_PASSWORD: ${MAIL_APP_PASSWORD}
+      EMAIL_SERVICE_API_KEY: ${EMAIL_SERVICE_API_KEY}
+    networks: [ backend ]
+
   booking-service:
     build: ./booking-service
     container_name: booking-service

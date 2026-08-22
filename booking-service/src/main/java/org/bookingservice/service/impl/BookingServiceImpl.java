@@ -2,6 +2,7 @@ package org.bookingservice.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.bookingservice.config.AuthenticatedUser;
 import org.bookingservice.dto.BookingRequestDTO;
@@ -9,12 +10,14 @@ import org.bookingservice.dto.BookingResponseDTO;
 import org.bookingservice.entity.Booking;
 import org.bookingservice.enums.BookingStatus;
 import org.bookingservice.enums.Role;
+import org.bookingservice.event.BookingConfirmedEvent;
 import org.bookingservice.exception.BookingNotFoundException;
 import org.bookingservice.mapper.BookingMapper;
+import org.bookingservice.producer.BookingEventPublisher;
 import org.bookingservice.repository.BookingRepository;
 import org.bookingservice.service.BookingService;
 import org.bookingservice.util.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,14 +26,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class BookingServiceImpl implements BookingService{
 
-    @Autowired
-    private BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
+    private final BookingMapper bookingMapper;
+    private final SecurityUtils securityUtils;
+    private final BookingEventPublisher bookingEventPublisher;
 
-    @Autowired
-    private BookingMapper bookingMapper;
-
-    @Autowired
-    private SecurityUtils securityUtils;
+    public BookingServiceImpl(BookingRepository bookingRepository, BookingMapper bookingMapper,
+                              SecurityUtils securityUtils, BookingEventPublisher bookingEventPublisher) {
+        this.bookingRepository = bookingRepository;
+        this.bookingMapper = bookingMapper;
+        this.securityUtils = securityUtils;
+        this.bookingEventPublisher = bookingEventPublisher;
+    }
 
     @Override
     @Transactional
@@ -47,8 +54,19 @@ public class BookingServiceImpl implements BookingService{
         booking.setPassportNumber(request.getPassportNumber());
         booking.setBookingTime(LocalDateTime.now());
         booking.setStatus(BookingStatus.CONFIRMED);
-
-        return bookingMapper.toDto(bookingRepository.save(booking));
+        Booking savedBooking = bookingRepository.save(booking);
+        BookingConfirmedEvent event = new BookingConfirmedEvent(
+                UUID.randomUUID().toString(),
+                savedBooking.getId(),
+                currentUser.userId(),
+                currentUser.email(),
+                savedBooking.getFlightId(),
+                savedBooking.getSeatClass().name(),
+                savedBooking.getBookingTime(),
+                savedBooking.getPriceAtBooking()
+        );
+        bookingEventPublisher.publishBookingConfirmed(event);
+        return bookingMapper.toDto(savedBooking);
     }
 
     public List<BookingResponseDTO> getAllBooking(){
