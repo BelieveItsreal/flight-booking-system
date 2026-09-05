@@ -15,7 +15,9 @@ public class BookingConfirmedEvent {
     private Long userId;
     private String userEmail;
     private Long flightId;
+    private String flightNumber;
     private String seatClass;
     private LocalDateTime bookingTime;
+    private LocalDateTime departureTime;
     private Double priceAtBooking;
 }

@@ -57,6 +57,10 @@ public class EmailService {
                     <td style="padding: 10px 0; border-bottom: 1px solid #eeeeee; color: #222222; font-size: 14px; font-weight: bold; text-align: right;">%s</td>
                   </tr>
                   <tr>
+                    <td style="padding: 10px 0; border-bottom: 1px solid #eeeeee; color: #888888; font-size: 13px;">Departure Time</td>
+                    <td style="padding: 10px 0; border-bottom: 1px solid #eeeeee; color: #222222; font-size: 14px; font-weight: bold; text-align: right;">%s</td>
+                  </tr>
+                  <tr>
                     <td style="padding: 10px 0; border-bottom: 1px solid #eeeeee; color: #888888; font-size: 13px;">Seat Class</td>
                     <td style="padding: 10px 0; border-bottom: 1px solid #eeeeee; color: #222222; font-size: 14px; font-weight: bold; text-align: right;">%s</td>
                   </tr>
@@ -84,6 +88,7 @@ public class EmailService {
         """.formatted(
                 request.getBookingId(),
                 request.getFlightNumber(),
+                request.getDepartureTime(),
                 request.getSeatClass(),
                 request.getBookingTime(),
                 request.getPriceAtBooking()

@@ -22,5 +22,6 @@ public class BookingConfirmationRequest {
     private String flightNumber;
     private String seatClass;
     private LocalDateTime bookingTime;
+    private LocalDateTime departureTime;
     private Double priceAtBooking;
 }

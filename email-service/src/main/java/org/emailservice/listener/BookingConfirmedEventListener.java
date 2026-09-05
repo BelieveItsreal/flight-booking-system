@@ -17,9 +17,10 @@ public class BookingConfirmedEventListener {
         BookingConfirmationRequest request = new BookingConfirmationRequest(
                 event.getUserEmail(),
                 event.getBookingId(),
-                "Flight #" + event.getFlightId(),
+                event.getFlightNumber(),
                 event.getSeatClass(),
                 event.getBookingTime(),
+                event.getDepartureTime(),
                 event.getPriceAtBooking()
         );
         emailService.sendBookingConfirmation(request);
