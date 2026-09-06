@@ -1,0 +1,92 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: flight-booking-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./docker/postgres-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks: [ backend ]
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: flight-booking-kafka
+    restart: unless-stopped
+    ports:
+      - "9094:9094"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXT_HOST://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CLUSTER_ID: 4L6g3nShT-eMCtK--X86sw
+    networks: [ backend ]
+
+  flight-service:
+    build: ./flight-service
+    container_name: flight-service
+    ports: [ "8083:8083" ]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/flightdb
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      postgres: { condition: service_healthy }
+    networks: [ backend ]
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports: [ "8081:8081" ]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/userdb
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      postgres: { condition: service_healthy }
+    networks: [ backend ]
+
+  email-service:
+    build: ./email-service
+    container_name: email-service
+    ports: ["8084:8084"]
+    environment:
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_APP_PASSWORD: ${MAIL_APP_PASSWORD}
+      EMAIL_SERVICE_API_KEY: ${EMAIL_SERVICE_API_KEY}
+    networks: [ backend ]
+
+  booking-service:
+    build: ./booking-service
+    container_name: booking-service
+    ports: [ "8082:8082" ]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bookingdb
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      postgres: { condition: service_healthy }
+    networks: [ backend ]
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports: [ "8080:8080" ]
+    depends_on: [ flight-service, user-service, booking-service ]
+    networks: [ backend ]
+networks:
+  backend:
+
+volumes:
+  postgres_data:

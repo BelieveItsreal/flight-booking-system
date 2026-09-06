@@ -38,22 +38,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
                 if (!jwtService.isTokenExpired(token)) {
-                    AuthenticatedUser principal = new AuthenticatedUser(
-                        jwtService.extractUserId(token),
-                        jwtService.extractEmail(token),
-                        Role.valueOf(jwtService.extractRole(token))
-                    );
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        principal,
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_" + principal.role().name()))
-                    );
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    Long userId = jwtService.extractUserId(token);
+                    if (userId != null) {
+                        AuthenticatedUser principal = new AuthenticatedUser(
+                                userId,
+                                jwtService.extractEmail(token),
+                                Role.valueOf(jwtService.extractRole(token))
+                        );
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                principal,
+                                null,
+                                List.of(new SimpleGrantedAuthority("ROLE_" + principal.role().name()))
+                        );
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
                 }
             } catch (JwtException | IllegalArgumentException ignored) {
                 // invalid/expired/tampered token - leave request unauthenticated
             }
         }
+
         filterChain.doFilter(request, response);
     }
 

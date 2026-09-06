@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package flightBooking;
+
+option java_package = "org.flightBooking.proto";
+option java_multiple_files = true;
+option java_outer_classname = "FlightSeatProto";
+
+enum SeatClass{
+  SEAT_CLASS_UNSPECIFIED = 0;
+  ECONOMY = 1;
+  BUSINESS = 2;
+}
+
+message ReserveSeatRequest{
+  int64 flight_id = 1;
+  SeatClass seat_class = 2;
+}
+
+message ReserveSeatResponse{
+  bool success = 1;
+  string message = 2;
+  double price_at_booking = 3;
+  int64 flight_seat_id = 4;
+  int64 hold_id = 5;
+}
+
+message ConfirmSeatRequest{
+  int64 hold_id = 1;
+}
+
+message ConfirmSeatResponse{
+  bool success = 1;
+  string message = 2;
+}
+
+message ReleaseSeatRequest{
+  int64 flight_seat_id = 1;
+}
+
+message ReleaseSeatResponse{
+  bool success = 1;
+  string message = 2;
+}
+
+message ReleaseHoldRequest{
+  int64 hold_id = 1;
+}
+
+message ReleaseHoldResponse{
+  bool success = 1;
+  string message = 2;
+}
+
+message GetFlightRequest{
+  int64 flight_id = 1;
+}
+
+message FlightDetails{
+  int64 id = 1;
+  string flight_number = 2;
+  string source_code = 3;
+  string source_city = 4;
+  string destination_code = 5;
+  string destination_city = 6;
+  int64 departure_time_epoch_millis = 7;
+  int64 arrival_time_epoch_millis = 8;
+}
+
+service FlightSeatService{
+  rpc ReserveSeat(ReserveSeatRequest) returns (ReserveSeatResponse);
+  rpc ConfirmSeat(ConfirmSeatRequest) returns (ConfirmSeatResponse);
+  rpc ReleaseSeat(ReleaseSeatRequest) returns (ReleaseSeatResponse);
+  rpc releaseHold(ReleaseHoldRequest) returns (ReleaseHoldResponse);
+  rpc GetFlight(GetFlightRequest) returns (FlightDetails);
+}
