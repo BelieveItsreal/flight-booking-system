@@ -49,6 +49,7 @@ public class FlightSeatGrpcClient {
 
     public FlightDetails getFlight(Long flightId){
         return flightSeatStub.getFlight(GetFlightRequest.newBuilder()
+                .setFlightId(flightId)
                 .build());
     }
 

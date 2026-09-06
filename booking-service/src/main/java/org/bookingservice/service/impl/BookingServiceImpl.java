@@ -64,10 +64,10 @@ public class BookingServiceImpl implements BookingService{
         booking.setFlightId(request.getFlightId());
         booking.setFlightSeatId(reservation.getFlightSeatId());
         booking.setUserId(currentUser.userId());
-        booking.setSeatClass(booking.getSeatClass());
-        booking.setPassportNumber(booking.getPassportNumber());
-        booking.setBookingTime(booking.getBookingTime());
-        booking.setPriceAtBooking(booking.getPriceAtBooking());
+        booking.setSeatClass(request.getSeatClass());
+        booking.setPassportNumber(request.getPassportNumber());
+        booking.setBookingTime(LocalDateTime.now());
+        booking.setPriceAtBooking(reservation.getPriceAtBooking());
         booking.setStatus(BookingStatus.CONFIRMED);
         Booking savedBooking;
         try {
