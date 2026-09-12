@@ -1,6 +1,5 @@
-package org.emailservice.service;
+package org.emailservice.exception;
 
-import org.emailservice.exception.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;

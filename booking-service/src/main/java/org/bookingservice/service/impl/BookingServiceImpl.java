@@ -17,7 +17,7 @@ import org.bookingservice.exception.BookingNotFoundException;
 import org.bookingservice.exception.SeatUnavailableException;
 import org.bookingservice.grpc.FlightSeatGrpcClient;
 import org.bookingservice.mapper.BookingMapper;
-import org.bookingservice.producer.BookingEventPublisher;
+import org.bookingservice.producer.OutboxEventWriter;
 import org.bookingservice.repository.BookingRepository;
 import org.bookingservice.service.BookingService;
 import org.bookingservice.util.SecurityUtils;
@@ -38,16 +38,16 @@ public class BookingServiceImpl implements BookingService{
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
     private final SecurityUtils securityUtils;
-    private final BookingEventPublisher bookingEventPublisher;
+    private final OutboxEventWriter outboxEventWriter;
     private final FlightSeatGrpcClient flightSeatGrpcClient;
 
     public BookingServiceImpl(BookingRepository bookingRepository, BookingMapper bookingMapper,
-                              SecurityUtils securityUtils, BookingEventPublisher bookingEventPublisher,
+                              SecurityUtils securityUtils, OutboxEventWriter outboxEventWriter,
                               FlightSeatGrpcClient flightSeatGrpcClient) {
         this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
         this.securityUtils = securityUtils;
-        this.bookingEventPublisher = bookingEventPublisher;
+        this.outboxEventWriter = outboxEventWriter;
         this.flightSeatGrpcClient = flightSeatGrpcClient;
     }
 
@@ -102,7 +102,7 @@ public class BookingServiceImpl implements BookingService{
                 departureTime,
                 savedBooking.getPriceAtBooking()
         );
-        bookingEventPublisher.publishBookingConfirmed(event);
+        outboxEventWriter.savedBookingConfirmed(event);
         return bookingMapper.toDto(savedBooking);
     }
 
