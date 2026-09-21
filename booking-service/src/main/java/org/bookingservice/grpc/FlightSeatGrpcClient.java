@@ -44,6 +44,7 @@ public class FlightSeatGrpcClient {
 
     private void confirmSeatFallback(Long holdId, Throwable t){
         log.error("flight-service unavailable while confirming seat hold {}: {}", holdId, t.toString());
+        throw unavailable("Flight service is currently unavailable, please try again later", t);
     }
 
     @CircuitBreaker(name = "flightService", fallbackMethod = "releaseHoldFallback")
@@ -58,6 +59,7 @@ public class FlightSeatGrpcClient {
 
     private void releaseHoldFallback(Long holdId, Throwable t){
         log.error("flight-service unavailable while releasing seat hold {}: {}", holdId, t.toString());
+        throw unavailable("Flight service is currently unavailable, please try again later", t);
     }
 
     @CircuitBreaker(name = "flightService", fallbackMethod = "releaseSeatFallback")
@@ -72,6 +74,7 @@ public class FlightSeatGrpcClient {
 
     private void releaseSeatFallback(Long flightSeatId, Throwable t){
         log.error("flight-service unavailable while releasing flight seat {}: {}", flightSeatId, t.toString());
+        throw unavailable("Flight service is currently unavailable, please try again later", t);
     }
 
     @CircuitBreaker(name = "flightService", fallbackMethod = "getFlightFallback")
@@ -82,6 +85,9 @@ public class FlightSeatGrpcClient {
     }
 
     private FlightDetails getFlightFallback(Long flightId, Throwable t){
+        if (t instanceof StatusRuntimeException sre && sre.getStatus().getCode() == Status.Code.NOT_FOUND) {
+            throw sre;
+        }
         log.error("flight-service unavailable while fetching flight {}: {}", flightId, t.toString());
         throw unavailable("Flight service is currently unavailable, please try again later", t);
     }
