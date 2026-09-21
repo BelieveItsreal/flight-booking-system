@@ -4,7 +4,7 @@ services:
     container_name: flight-booking-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: 123
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -36,6 +36,12 @@ services:
       CLUSTER_ID: 4L6g3nShT-eMCtK--X86sw
     networks: [ backend ]
 
+  discovery-server:
+    build: ./discovery-server
+    container_name: discovery-server
+    ports: [ "8761:8761" ]
+    networks: [ backend ]
+
   flight-service:
     build: ./flight-service
     container_name: flight-service
@@ -45,6 +51,8 @@ services:
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
       postgres: { condition: service_healthy }
+      discovery-server:
+        condition: service_started
     networks: [ backend ]
 
   user-service:
@@ -56,6 +64,8 @@ services:
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
       postgres: { condition: service_healthy }
+      discovery-server:
+        condition: service_started
     networks: [ backend ]
 
   email-service:
@@ -66,6 +76,7 @@ services:
       MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_APP_PASSWORD: ${MAIL_APP_PASSWORD}
       EMAIL_SERVICE_API_KEY: ${EMAIL_SERVICE_API_KEY}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     networks: [ backend ]
 
   booking-service:
@@ -75,15 +86,37 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bookingdb
       JWT_SECRET: ${JWT_SECRET}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      GRPC_CLIENT_FLIGHT_SERVICE_ADDRESS: static://flight-service:9091
     depends_on:
       postgres: { condition: service_healthy }
+      discovery-server:
+        condition: service_started
+    networks: [ backend ]
+
+  redis:
+    image: redis:7-alpine
+    container_name: flight-booking-redis
+    networks: [ backend ]
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: flight-booking-jaeger
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "16686:16686"   # UI
+      - "4317:4317"     # OTLP gRPC
+      - "4318:4318"     # OTLP HTTP
     networks: [ backend ]
 
   api-gateway:
     build: ./api-gateway
     container_name: api-gateway
     ports: [ "8080:8080" ]
-    depends_on: [ flight-service, user-service, booking-service ]
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on: [ flight-service, user-service, booking-service, redis, discovery-server]
     networks: [ backend ]
 networks:
   backend:
