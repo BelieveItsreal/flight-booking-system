@@ -4,7 +4,7 @@ services:
     container_name: flight-booking-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: 123
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
