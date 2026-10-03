@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Ticket with side notches -->
+  <path d="M16 5 H40 a4 4 0 0 1 4 4 V18 a4 4 0 0 0 0 8 V53 a4 4 0 0 1 -4 4 H16 a4 4 0 0 1 -4 -4 V26 a4 4 0 0 0 0 -8 V9 a4 4 0 0 1 4 -4 Z"
+        fill="#ffffff" stroke="#1a2b6d" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Header lines -->
+  <line x1="19" y1="11" x2="37" y2="11" stroke="#1a2b6d" stroke-width="2" stroke-linecap="round"/>
+  <line x1="19" y1="15.5" x2="30" y2="15.5" stroke="#1a2b6d" stroke-width="2" stroke-linecap="round"/>
+  <!-- Tear line -->
+  <line x1="18" y1="22" x2="38" y2="22" stroke="#1a2b6d" stroke-width="1.5" stroke-dasharray="2 2"/>
+  <!-- QR code -->
+  <g fill="#1a2b6d">
+    <path fill-rule="evenodd" d="M18 28 h7 v7 h-7 Z M19.5 29.5 v4 h4 v-4 Z"/>
+    <rect x="20.5" y="30.5" width="2" height="2"/>
+    <path fill-rule="evenodd" d="M31 28 h7 v7 h-7 Z M32.5 29.5 v4 h4 v-4 Z"/>
+    <rect x="33.5" y="30.5" width="2" height="2"/>
+    <path fill-rule="evenodd" d="M18 41 h7 v7 h-7 Z M19.5 42.5 v4 h4 v-4 Z"/>
+    <rect x="20.5" y="43.5" width="2" height="2"/>
+    <rect x="27" y="28" width="2" height="2"/>
+    <rect x="27" y="32" width="2" height="2"/>
+    <rect x="18" y="37" width="2" height="2"/>
+    <rect x="22" y="37" width="2" height="2"/>
+    <rect x="27" y="36" width="2" height="2"/>
+    <rect x="30" y="38" width="2" height="2"/>
+    <rect x="27" y="41" width="2" height="2"/>
+    <rect x="30" y="42" width="2" height="2"/>
+    <rect x="27" y="45" width="2" height="2"/>
+  </g>
+  <!-- Confirmed badge -->
+  <circle cx="45" cy="49" r="10" fill="#ff6d38" stroke="#ffffff" stroke-width="3"/>
+  <path d="M40.5 49 l3 3 L50 45.5" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

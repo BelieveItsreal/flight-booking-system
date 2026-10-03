@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Handle -->
+  <line x1="40" y1="40" x2="56" y2="56" stroke="#ff6d38" stroke-width="7" stroke-linecap="round"/>
+  <!-- Lens -->
+  <circle cx="26" cy="26" r="18" fill="#ffffff" stroke="#1a2b6d" stroke-width="3.5"/>
+  <circle cx="26" cy="26" r="13.5" stroke="#ff6d38" stroke-width="1.5"/>
+  <!-- Plane -->
+  <path transform="translate(26 26) rotate(45)" fill="#1a2b6d"
+        d="M0 -11 C1.5 -11 2 -9.5 2 -8 L2 -3 L10 2 L10 5 L2 2.5 L2 7 L5 9.5 L5 11.5 L0 10 L-5 11.5 L-5 9.5 L-2 7 L-2 2.5 L-10 5 L-10 2 L-2 -3 L-2 -8 C-2 -9.5 -1.5 -11 0 -11 Z"/>
+</svg>
