@@ -1,15 +1,15 @@
-import { useEffect } from 'react'
+import { useEffect, type RefObject } from 'react'
 
 // Calls onClose when the user clicks outside `ref` or presses Escape
-export function useClickOutside(ref, isOpen, onClose) {
+export function useClickOutside(ref: RefObject<HTMLElement | null>, isOpen: boolean, onClose: () => void) {
     useEffect(() => {
         if (!isOpen) return
 
-        function handleClickOutside(event) {
-            if (ref.current && !ref.current.contains(event.target)) onClose()
+        function handleClickOutside(event: MouseEvent) {
+            if (ref.current && !ref.current.contains(event.target as Node)) onClose()
         }
 
-        function handleEscape(event) {
+        function handleEscape(event: KeyboardEvent) {
             if (event.key === 'Escape') onClose()
         }
 

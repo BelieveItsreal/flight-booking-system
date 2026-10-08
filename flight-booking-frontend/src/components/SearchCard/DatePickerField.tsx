@@ -2,8 +2,18 @@ import { useRef, useState } from 'react'
 import { DayPicker } from 'react-day-picker'
 import { format } from 'date-fns'
 import { CalendarDays } from 'lucide-react'
-import SearchField from './SearchField.jsx'
-import { useClickOutside } from '../../hooks/useClickOutside.js'
+import SearchField from './SearchField.tsx'
+import { useClickOutside } from '../../hooks/useClickOutside.ts'
+
+interface DatePickerFieldProps {
+    label: string
+    selected?: Date
+    onSelect: (date: Date) => void
+    placeholder?: string
+    disabled?: boolean
+    minDate?: Date
+    className?: string
+}
 
 function DatePickerField({
                              label,
@@ -13,11 +23,11 @@ function DatePickerField({
                              disabled = false,
                              minDate = new Date(),
                              className = '',
-                         }) {
+                         }: DatePickerFieldProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const wrapperRef = useRef(null)
+    const wrapperRef = useRef<HTMLDivElement>(null)
     useClickOutside(wrapperRef, isOpen, () => setIsOpen(false))
-    const handleSelect = (date) => {
+    const handleSelect = (date: Date | undefined) => {
         if (!date) return
         onSelect(date)
         setIsOpen(false)

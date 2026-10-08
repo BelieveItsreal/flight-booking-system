@@ -1,5 +1,5 @@
-import {heroWingSunset} from "../../assets/index.js";
-import SearchCard from "../SearchCard/SearchCard.jsx";
+import {heroWingSunset} from "../../assets/index.ts";
+import SearchCard from "../SearchCard/SearchCard.tsx";
 
 function Hero() {
     return(

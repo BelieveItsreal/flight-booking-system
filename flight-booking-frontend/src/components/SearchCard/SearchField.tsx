@@ -1,4 +1,16 @@
-function SearchField({icon: Icon, label, value, placeholder, disabled = false, className= '', onClick}) {
+import type { LucideIcon } from 'lucide-react'
+
+interface SearchFieldProps {
+    icon: LucideIcon
+    label: string
+    value: string
+    placeholder?: string
+    disabled?: boolean
+    className?: string
+    onClick: () => void
+}
+
+function SearchField({icon: Icon, label, value, placeholder, disabled = false, className= '', onClick}: SearchFieldProps) {
     return(
         <button
             type="button"

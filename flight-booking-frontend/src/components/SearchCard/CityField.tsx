@@ -1,14 +1,23 @@
-import {useEffect, useId, useRef, useState} from "react";
-import {useClickOutside} from "../../hooks/useClickOutside.js";
-import {formatAirport, searchAirports} from "../../data/airports.js";
-import SearchField from "./SearchField.jsx";
+import {useEffect, useId, useRef, useState, type KeyboardEvent} from "react";
+import type {LucideIcon} from "lucide-react";
+import {useClickOutside} from "../../hooks/useClickOutside.ts";
+import {formatAirport, searchAirports, type Airport} from "../../data/airports.ts";
+import SearchField from "./SearchField.tsx";
 
-function CityField({label, icon: Icon, value, onSelect, error}) {
+interface CityFieldProps {
+    label: string
+    icon: LucideIcon
+    value: Airport | null
+    onSelect: (airport: Airport) => void
+    error?: string
+}
+
+function CityField({label, icon: Icon, value, onSelect, error}: CityFieldProps) {
     const [isOpen, setIsOpen] = useState(false)
     const [query, setQuery] = useState('')
     const [activeIndex, setActiveIndex] = useState(0)
-    const wrapperRef = useRef(null)
-    const listRef = useRef(null)
+    const wrapperRef = useRef<HTMLDivElement>(null)
+    const listRef = useRef<HTMLUListElement>(null)
     const listId = useId()
     useClickOutside(wrapperRef, isOpen, () => setIsOpen(false))
 
@@ -24,11 +33,11 @@ function CityField({label, icon: Icon, value, onSelect, error}) {
         setActiveIndex(0)
         setIsOpen(true)
     }
-    const choose = (airport) => {
+    const choose = (airport: Airport) => {
         onSelect(airport)
         setIsOpen(false)
     }
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
        if (event.key === 'ArrowDown'){
            event.preventDefault()
            setActiveIndex((i) => Math.min(i+1, results.length-1))

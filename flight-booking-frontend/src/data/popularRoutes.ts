@@ -1,6 +1,16 @@
 import { destDelhi, destDubai, destGoa } from '../assets'
 
-export const POPULAR_ROUTES = [
+export interface PopularRoute {
+    id: string
+    from: string
+    to: string
+    image: string
+    imageAlt: string
+    tripType: string
+    price: number
+}
+
+export const POPULAR_ROUTES: PopularRoute[] = [
     {
         id: 'DEL-BOM',
         from: 'DEL',

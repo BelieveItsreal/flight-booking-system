@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { ArrowLeftRight, ArrowUpRight, PlaneLanding, PlaneTakeoff } from 'lucide-react'
-import CityField from './CityField.jsx'
-import DatePickerField from './DatePickerField.jsx'
-import TravellerClassField from './TravellerClassField.jsx'
+import CityField from './CityField.tsx'
+import DatePickerField from './DatePickerField.tsx'
+import TravellerClassField from './TravellerClassField.tsx'
+import { useAppDispatch, useAppSelector } from '../../store/hooks.ts'
 import {
     setDeparture,
     setFrom,
@@ -12,11 +12,20 @@ import {
     setTo,
     setTravellers,
     swapCities,
-} from '../../store/searchSlice.js'
-import { fromISODate, toISODate } from '../../utils/date.js'
+} from '../../store/searchSlice.ts'
+import type { Airport } from '../../data/airports.ts'
+import { fromISODate, toISODate } from '../../utils/date.ts'
 
-function validateSearch({ from, to, departure }) {
-    const errors = {}
+interface SearchInput {
+    from: Airport | null
+    to: Airport | null
+    departure: string | null
+}
+
+type SearchErrors = Partial<Record<keyof SearchInput, string>>
+
+function validateSearch({ from, to, departure }: SearchInput): SearchErrors {
+    const errors: SearchErrors = {}
     if (!from) errors.from = 'Please select a departure city'
     if (!to) errors.to = 'Please select a destination city'
     if (from && to && from.code === to.code) errors.to = 'From and To cannot be the same city'
@@ -25,15 +34,15 @@ function validateSearch({ from, to, departure }) {
 }
 
 function SearchCard() {
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
     // Read each value separately, so the card only re-renders when one of them changes
-    const from = useSelector((state) => state.search.from)
-    const to = useSelector((state) => state.search.to)
-    const departure = useSelector((state) => state.search.departure)
-    const returnDate = useSelector((state) => state.search.returnDate)
-    const travellers = useSelector((state) => state.search.travellers)
+    const from = useAppSelector((state) => state.search.from)
+    const to = useAppSelector((state) => state.search.to)
+    const departure = useAppSelector((state) => state.search.departure)
+    const returnDate = useAppSelector((state) => state.search.returnDate)
+    const travellers = useAppSelector((state) => state.search.travellers)
 
     // Local UI state only
     const [submitted, setSubmitted] = useState(false)
@@ -47,11 +56,12 @@ function SearchCard() {
         setSwapRotation((rotation) => rotation + 180)
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setSubmitted(true)
 
-        if (Object.keys(validateSearch({ from, to, departure })).length > 0) return
+        // The null checks are already covered by validateSearch; repeated here so TypeScript narrows the types
+        if (!from || !to || !departure || Object.keys(validateSearch({ from, to, departure })).length > 0) return
 
         const payload = { from: from.code, to: to.code, departure, returnDate, ...travellers }
         console.log('Search payload:', payload)
@@ -60,9 +70,9 @@ function SearchCard() {
             from: from.code,
             to: to.code,
             depart: departure,
-            adults: travellers.adults,
-            children: travellers.children,
-            infants: travellers.infants,
+            adults: String(travellers.adults),
+            children: String(travellers.children),
+            infants: String(travellers.infants),
             class: travellers.cabinClass,
         })
         if (returnDate) params.set('return', returnDate)

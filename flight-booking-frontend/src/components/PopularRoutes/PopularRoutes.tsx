@@ -1,12 +1,12 @@
-import {useDispatch} from "react-redux";
-import {setRoute} from "../../store/searchSlice.js";
-import {findAirport} from "../../data/airports.js";
-import {POPULAR_ROUTES} from "../../data/popularRoutes.js";
-import RouteCard from "./RouteCard.jsx";
+import {useAppDispatch} from "../../store/hooks.ts";
+import {setRoute} from "../../store/searchSlice.ts";
+import {findAirport} from "../../data/airports.ts";
+import {POPULAR_ROUTES, type PopularRoute} from "../../data/popularRoutes.ts";
+import RouteCard from "./RouteCard.tsx";
 
 function PopularRoutes() {
-    const dispatch = useDispatch()
-    const handleBook = (route) => {
+    const dispatch = useAppDispatch()
+    const handleBook = (route: PopularRoute) => {
         dispatch(setRoute({from: findAirport(route.from), to: findAirport(route.to)}))
         window.scrollTo({top: 0, behavior: 'smooth'})
     }

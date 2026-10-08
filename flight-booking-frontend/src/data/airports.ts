@@ -1,4 +1,10 @@
-export const AIRPORTS = [
+export interface Airport {
+    code: string
+    city: string
+    name: string
+}
+
+export const AIRPORTS: Airport[] = [
     { code: 'DEL', city: 'Delhi', name: 'Indira Gandhi International Airport' },
     { code: 'BOM', city: 'Mumbai', name: 'Chhatrapati Shivaji Maharaj International Airport' },
     { code: 'BLR', city: 'Bengaluru', name: 'Kempegowda International Airport' },
@@ -18,13 +24,13 @@ export const AIRPORTS = [
     { code: 'DXB', city: 'Dubai', name: 'Dubai International Airport' },
 ]
 
-export const findAirport = (code) => AIRPORTS.find((airport) => airport.code === code) ?? null
+export const findAirport = (code: string): Airport | null => AIRPORTS.find((airport) => airport.code === code) ?? null
 
 // { city: 'Delhi', code: 'DEL' } → 'Delhi (DEL)'
-export const formatAirport = (airport) => (airport ? `${airport.city} (${airport.code})` : '')
+export const formatAirport = (airport: Airport | null): string => (airport ? `${airport.city} (${airport.code})` : '')
 
 // Matches city, code or airport name; empty query shows every airport
-export function searchAirports(query) {
+export function searchAirports(query: string): Airport[] {
     const q = query.trim().toLowerCase()
     if (!q) return AIRPORTS
 

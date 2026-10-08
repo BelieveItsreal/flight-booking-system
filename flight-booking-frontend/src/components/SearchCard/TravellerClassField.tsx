@@ -1,18 +1,28 @@
 import { useRef, useState } from 'react'
 import { Minus, Plus, User } from 'lucide-react'
-import SearchField from './SearchField.jsx'
-import { useClickOutside } from '../../hooks/useClickOutside.js'
+import SearchField from './SearchField.tsx'
+import { useClickOutside } from '../../hooks/useClickOutside.ts'
+import type { CabinClass, Travellers } from '../../store/searchSlice.ts'
 
-const CABIN_CLASSES = ['Economy', 'Business']
+const CABIN_CLASSES: CabinClass[] = ['Economy', 'Business']
 const MAX_TRAVELLERS = 9
 
 // Builds the field text, e.g. "1 Traveller, Economy" or "3 Travellers, Business"
-function getLabel({ adults, children, infants, cabinClass }) {
+function getLabel({ adults, children, infants, cabinClass }: Travellers) {
     const total = adults + children + infants
     return `${total} Traveller${total > 1 ? 's' : ''}, ${cabinClass}`
 }
 
-function Counter({ label, hint, value, onChange, min, max }) {
+interface CounterProps {
+    label: string
+    hint: string
+    value: number
+    onChange: (value: number) => void
+    min: number
+    max: number
+}
+
+function Counter({ label, hint, value, onChange, min, max }: CounterProps) {
     const buttonClass =
         'grid size-8 place-items-center rounded-full border border-line text-primary transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent'
 
@@ -47,9 +57,15 @@ function Counter({ label, hint, value, onChange, min, max }) {
     )
 }
 
-function TravellerClassField({ value, onChange, className = '' }) {
+interface TravellerClassFieldProps {
+    value: Travellers
+    onChange: (value: Travellers) => void
+    className?: string
+}
+
+function TravellerClassField({ value, onChange, className = '' }: TravellerClassFieldProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const wrapperRef = useRef(null)
+    const wrapperRef = useRef<HTMLDivElement>(null)
 
     useClickOutside(wrapperRef, isOpen, () => setIsOpen(false))
 
@@ -57,9 +73,9 @@ function TravellerClassField({ value, onChange, className = '' }) {
     const seatsLeft = MAX_TRAVELLERS - adults - children
 
     // Update one field and keep the rest
-    const update = (changes) => onChange({ ...value, ...changes })
+    const update = (changes: Partial<Travellers>) => onChange({ ...value, ...changes })
 
-    const handleAdultsChange = (newAdults) => {
+    const handleAdultsChange = (newAdults: number) => {
         // Each infant sits on an adult's lap, so infants can't exceed adults
         update({ adults: newAdults, infants: Math.min(infants, newAdults) })
     }

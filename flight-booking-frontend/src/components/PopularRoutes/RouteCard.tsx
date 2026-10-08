@@ -1,8 +1,14 @@
 import { ArrowRight, Plane } from 'lucide-react'
-import { findAirport } from '../../data/airports.js'
-import { formatINR } from '../../utils/currency.js'
+import { findAirport } from '../../data/airports.ts'
+import type { PopularRoute } from '../../data/popularRoutes.ts'
+import { formatINR } from '../../utils/currency.ts'
 
-function RouteCard({route, onBook}){
+interface RouteCardProps {
+    route: PopularRoute
+    onBook: (route: PopularRoute) => void
+}
+
+function RouteCard({route, onBook}: RouteCardProps){
     const from = findAirport(route.from)
     const to = findAirport(route.to)
     return(
@@ -18,9 +24,9 @@ function RouteCard({route, onBook}){
             </div>
             <div className="px-2 pt-3 pb-1.5">
                 <h3 className="flex items-center gap-1.5 text-lg font-semibold text-ink">
-                    {from.city}
+                    {from?.city}
                     <ArrowRight className="size-4" />
-                    {to.city}
+                    {to?.city}
                 </h3>
                 <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted">
                     <Plane className="size-3.5 text-ink" />

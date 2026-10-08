@@ -1,7 +1,7 @@
-import {HOW_IT_WORKS_STEPS} from "../../data/howItWorks.js";
+import {HOW_IT_WORKS_STEPS} from "../../data/howItWorks.ts";
 import {Fragment} from "react";
 import {ArrowRight} from "lucide-react";
-import StepItem from "./StepItem.jsx";
+import StepItem from "./StepItem.tsx";
 
 function HowItWorks() {
     return (

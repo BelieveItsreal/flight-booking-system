@@ -1,11 +1,11 @@
 import { Route, Routes } from 'react-router'
-import Layout from './components/Layout/Layout.jsx'
-import Home from './pages/Home.jsx'
-import MyBookings from './pages/MyBookings.jsx'
-import Offers from './pages/Offers.jsx'
-import Support from './pages/Support.jsx'
-import NotFound from './pages/NotFound.jsx'
-import SearchResults from "./pages/SearchResults.jsx";
+import Layout from './components/Layout/Layout.tsx'
+import Home from './pages/Home.tsx'
+import MyBookings from './pages/MyBookings.tsx'
+import Offers from './pages/Offers.tsx'
+import Support from './pages/Support.tsx'
+import NotFound from './pages/NotFound.tsx'
+import SearchResults from "./pages/SearchResults.tsx";
 
 function App() {
     return (

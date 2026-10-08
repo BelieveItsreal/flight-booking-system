@@ -41,6 +41,22 @@
     :focus-visible {
         @apply outline-2 outline-offset-2 outline-accent;
     }
+
+    /* Smooth scrolling only for users who haven't asked for reduced motion */
+    @media (prefers-reduced-motion: no-preference) {
+        html {
+            scroll-behavior: smooth;
+        }
+    }
+
+    /* Respect reduced motion everywhere: no slides, lifts or spins */
+    @media (prefers-reduced-motion: reduce) {
+        *, ::before, ::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
 }
 
 /* ---------- Utility: centered content column ---------- */
@@ -48,7 +64,20 @@
     width: 100%;
     max-width: var(--container-content);
     margin-inline: auto;
-    padding-inline: 1.5rem;
+    padding-inline: 1rem;
+
+    @media (width >= 40rem) {
+        padding-inline: 1.5rem;
+    }
+}
+
+/* ---------- Utility: hide scrollbar but keep scrolling (route carousel) ---------- */
+@utility scrollbar-none {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 .rdp-root {
@@ -63,4 +92,12 @@
     --rdp-accent-color: var(--color-primary);              /* selected day, today, arrows */
     --rdp-accent-background-color: var(--color-subtle);    /* hover background */
     font-size: 0.875rem;
+
+    /* Smaller day cells on phones so the calendar fits a 320px screen */
+    @media (width < 40rem) {
+        --rdp-day-width: 36px;
+        --rdp-day-height: 36px;
+        --rdp-day_button-width: 34px;
+        --rdp-day_button-height: 34px;
+    }
 }

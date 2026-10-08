@@ -1,4 +1,11 @@
-function StepItem({ number, title, description, image }) {
+interface StepItemProps {
+    number: number
+    title: string
+    description: string
+    image: string
+}
+
+function StepItem({ number, title, description, image }: StepItemProps) {
     return(
         <li className="flex items-center gap-4">
             <div className="flex shrink-0 items-center">

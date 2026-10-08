@@ -1,6 +1,13 @@
 import { stepHold, stepSearch, stepTicket } from '../assets'
 
-export const HOW_IT_WORKS_STEPS = [
+export interface HowItWorksStep {
+    id: string
+    title: string
+    description: string
+    image: string
+}
+
+export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
     {
         id: 'search',
         title: 'Search Flights',

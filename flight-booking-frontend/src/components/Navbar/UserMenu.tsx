@@ -8,16 +8,16 @@ const itemClass =
     'flex w-full items-center gap-3 px-4 py-2 text-sm text-ink transition-colors hover:bg-subtle hover:text-primary'
 function UserMenu(){
     const [isOpen, setIsOpen] = useState(false)
-    const menuRef = useRef(null)
+    const menuRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         if (!isOpen) return
-        function handleClickOutside(event){
-            if (menuRef.current && !menuRef.current.contains(event.target)){
+        function handleClickOutside(event: MouseEvent){
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)){
                 setIsOpen(false)
             }
         }
-        function handleEscape(event){
+        function handleEscape(event: KeyboardEvent){
             if (event.key === 'Escape') setIsOpen(false)
         }
         document.addEventListener('mousedown', handleClickOutside)
