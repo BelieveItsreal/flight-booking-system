@@ -12,7 +12,8 @@ function Layout() {
                 Skip to the main content
             </a>
             <Navbar />
-            <main>
+            {/* id is the skip link's target; tabIndex lets it take focus without showing an outline */}
+            <main id="main" tabIndex={-1} className="outline-none">
                 <Outlet />
             </main>
         </div>

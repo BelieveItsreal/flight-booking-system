@@ -10,12 +10,12 @@ function HowItWorks() {
                 <h2 id="how-it-works-title" className="sr-only">
                     How it works
                 </h2>
-                <ol className="mx-auto flex max-w-400 items-center justify-between gap-6">
+                <ol className="mx-auto flex max-w-400 flex-col items-center justify-between gap-6 md:flex-row">
                     {HOW_IT_WORKS_STEPS.map((step, index) => (
                         <Fragment key={step.id}>
                             {index > 0 && (
                                 <li aria-hidden="true">
-                                    <ArrowRight className="size-6 text-ink" />
+                                    <ArrowRight className="size-6 rotate-90 text-ink md:rotate-0" />
                                 </li>
                             )}
                             <StepItem

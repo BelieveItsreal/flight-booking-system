@@ -13,6 +13,8 @@ interface DatePickerFieldProps {
     disabled?: boolean
     minDate?: Date
     className?: string
+    align?: 'left' | 'right'  // which edge the calendar lines up with; 'right' keeps it on-screen for the right-hand field
+    describedBy?: string
 }
 
 function DatePickerField({
@@ -23,6 +25,8 @@ function DatePickerField({
                              disabled = false,
                              minDate = new Date(),
                              className = '',
+                             align = 'left',
+                             describedBy,
                          }: DatePickerFieldProps) {
     const [isOpen, setIsOpen] = useState(false)
     const wrapperRef = useRef<HTMLDivElement>(null)
@@ -41,10 +45,16 @@ function DatePickerField({
                 placeholder={placeholder}
                 disabled={disabled}
                 onClick={() => setIsOpen((open) => !open)}
+                expanded={isOpen}
+                describedBy={describedBy}
                 className={className}
             />
             {isOpen && (
-                <div className="absolute top-full left-0 z-30 mt-2 rounded-xl border border-line bg-surface p-3 shadow-float">
+                <div
+                    className={`absolute top-full z-30 mt-2 rounded-xl border border-line bg-surface p-3 shadow-float ${
+                        align === 'right' ? 'right-0' : 'left-0'
+                    }`}
+                >
                     <DayPicker
                         mode="single"
                         selected={selected}

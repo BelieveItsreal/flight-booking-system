@@ -18,7 +18,11 @@ function CityField({label, icon: Icon, value, onSelect, error}: CityFieldProps) 
     const [activeIndex, setActiveIndex] = useState(0)
     const wrapperRef = useRef<HTMLDivElement>(null)
     const listRef = useRef<HTMLUListElement>(null)
+    const triggerRef = useRef<HTMLButtonElement>(null)
+    // The input unmounts on close, so focus has to be handed back to the field button by hand
+    const restoreFocus = useRef(false)
     const listId = useId()
+    const errorId = useId()
     useClickOutside(wrapperRef, isOpen, () => setIsOpen(false))
 
     // Keep the highlighted city visible when moving with the arrow keys
@@ -26,6 +30,14 @@ function CityField({label, icon: Icon, value, onSelect, error}: CityFieldProps) 
         if (!isOpen) return
         listRef.current?.children[activeIndex]?.scrollIntoView({ block: 'nearest' })
     }, [activeIndex, isOpen])
+
+    useEffect(() => {
+        if (!isOpen && restoreFocus.current) {
+            restoreFocus.current = false
+            triggerRef.current?.focus()
+        }
+    }, [isOpen])
+
     const results = searchAirports(query)
     const boxClass = `rounded-lg border ${error ? 'border-red-500' : 'border-line'}`
     const open = () => {
@@ -33,9 +45,13 @@ function CityField({label, icon: Icon, value, onSelect, error}: CityFieldProps) 
         setActiveIndex(0)
         setIsOpen(true)
     }
+    const close = () => {
+        restoreFocus.current = true
+        setIsOpen(false)
+    }
     const choose = (airport: Airport) => {
         onSelect(airport)
-        setIsOpen(false)
+        close()
     }
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
        if (event.key === 'ArrowDown'){
@@ -47,8 +63,11 @@ function CityField({label, icon: Icon, value, onSelect, error}: CityFieldProps) 
        }else if (event.key === 'Enter'){
            event.preventDefault()
            if (results[activeIndex]) choose(results[activeIndex])
+       }else if (event.key === 'Escape'){
+           close()
        }
     }
+    const optionId = (index: number) => `${listId}-option-${index}`
     return(
         <div ref={wrapperRef} className="relative">
             {isOpen? (
@@ -59,15 +78,20 @@ function CityField({label, icon: Icon, value, onSelect, error}: CityFieldProps) 
                         <input
                             autoFocus
                             role="combobox"
+                            aria-label={label}
                             aria-expanded="true"
                             aria-controls={listId}
                             aria-autocomplete="list"
+                            aria-activedescendant={results[activeIndex] ? optionId(activeIndex) : undefined}
+                            aria-describedby={error ? errorId : undefined}
                             value={query}
                             onChange={(event) => {
                                 setQuery(event.target.value)
                                 setActiveIndex(0)
                             }}
                             onKeyDown={handleKeyDown}
+                            // Tabbing away closes the list; option clicks don't blur (see onMouseDown below)
+                            onBlur={() => setIsOpen(false)}
                             placeholder="Type city or airport"
                             className="w-full bg-transparent text-[15px] font-medium text-ink outline-none placeholder:font-normal placeholder:text-disabled"
                         />
@@ -75,11 +99,13 @@ function CityField({label, icon: Icon, value, onSelect, error}: CityFieldProps) 
                 </div>
             ):(
                 <SearchField
+                    ref={triggerRef}
                     icon={Icon}
                     label={label}
                     value={formatAirport(value)}
                     placeholder="Select city"
                     onClick={open}
+                    describedBy={error ? errorId : undefined}
                     className={boxClass}
                 />
             )}
@@ -88,8 +114,9 @@ function CityField({label, icon: Icon, value, onSelect, error}: CityFieldProps) 
                     ref={listRef}
                     id={listId}
                     role="listbox"
-                    className="absolute top-full left-0 z-30 mt-2 max-h-72 w-full min-w-72 overflow-y-auto rounded-xl
-                    border border-line bg-surface py-2 shadow-float"
+                    aria-label={`${label} airports`}
+                    className="absolute top-full left-0 z-30 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border border-line
+                    bg-surface py-2 shadow-float sm:min-w-72"
                 >
                     {results.length === 0 ? (
                         <li className="px-4 py-3 text-sm text-muted">No airports found</li>
@@ -97,8 +124,11 @@ function CityField({label, icon: Icon, value, onSelect, error}: CityFieldProps) 
                         results.map((airport, index) => (
                             <li
                                 key={airport.code}
+                                id={optionId(index)}
                                 role="option"
                                 aria-selected={index === activeIndex}
+                                // Keep focus in the input so its onBlur doesn't close the list before the click lands
+                                onMouseDown={(event) => event.preventDefault()}
                                 onClick={() => choose(airport)}
                                 onMouseEnter={() => setActiveIndex(index)}
                                 className={`flex cursor-pointer items-center justify-between gap-3 px-4 py-2 ${
@@ -115,7 +145,7 @@ function CityField({label, icon: Icon, value, onSelect, error}: CityFieldProps) 
                     )}
                 </ul>
             )}
-            {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+            {error && <p id={errorId} className="mt-1 text-xs text-red-600">{error}</p>}
         </div>
     )
 }

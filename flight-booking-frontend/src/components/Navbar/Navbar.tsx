@@ -40,7 +40,7 @@ function Navbar() {
         >
             <div className="wrapper flex h-full items-center justify-between gap-4">
                 <Link to="/" onClick={closeMenu} className="flex items-center gap-2 rounded-md text-primary">
-                    <img src={airplane} className="size-8 sm:size-10" alt="airplane svg" />
+                    <img src={airplane} className="size-8 sm:size-10" alt="" />
                     <span className="text-2xl font-bold tracking-tight sm:text-2xl">SkyBook</span>
                 </Link>
                 <nav aria-label="Main" className="hidden h-full items-center gap-6 md:flex lg:gap-10">

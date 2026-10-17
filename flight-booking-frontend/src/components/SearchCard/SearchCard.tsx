@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useId, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { ArrowLeftRight, ArrowUpRight, PlaneLanding, PlaneTakeoff } from 'lucide-react'
 import CityField from './CityField.tsx'
@@ -47,6 +47,7 @@ function SearchCard() {
     // Local UI state only
     const [submitted, setSubmitted] = useState(false)
     const [swapRotation, setSwapRotation] = useState(0)
+    const departureErrorId = useId()
 
     // Errors are calculated, and only shown after the first search attempt
     const errors = submitted ? validateSearch({ from, to, departure }) : {}
@@ -84,10 +85,10 @@ function SearchCard() {
         <form
             onSubmit={handleSubmit}
             noValidate
-            className="w-full max-w-200 space-y-3 rounded-xl bg-surface p-5 shadow-float"
+            className="w-full max-w-200 space-y-3 rounded-xl bg-surface p-4 shadow-float sm:p-5"
         >
             {/* Row 1: From ⇄ To */}
-            <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-start gap-3">
                 <CityField
                     label="From"
                     icon={PlaneTakeoff}
@@ -100,12 +101,17 @@ function SearchCard() {
                     type="button"
                     onClick={handleSwap}
                     aria-label="Swap origin and destination"
-                    className="mt-2.5 grid size-10 place-items-center rounded-full bg-primary text-white transition-colors hover:bg-primary-light"
+                    className="mx-auto grid size-10 place-items-center rounded-full bg-primary text-white
+                    transition hover:bg-primary-light active:scale-95 sm:mx-0 sm:mt-2.5"
                 >
-                    <ArrowLeftRight
-                        className="size-4 transition-transform duration-300"
-                        style={{ rotate: `${swapRotation}deg` }}
-                    />
+                    {/* Outer span turns the icon vertical on mobile; the inline style on the icon
+                        animates the swap (both use `rotate`, so they can't share one element) */}
+                    <span className="rotate-90 sm:rotate-0">
+                        <ArrowLeftRight
+                            className="size-4 transition-transform duration-300"
+                            style={{ rotate: `${swapRotation}deg` }}
+                        />
+                    </span>
                 </button>
 
                 <CityField
@@ -118,7 +124,7 @@ function SearchCard() {
             </div>
 
             {/* Row 2: Departure | Return  +  Traveller & Class */}
-            <div className="grid grid-cols-[3fr_2fr] items-start gap-3">
+            <div className="grid grid-cols-1 items-start gap-3 md:grid-cols-[3fr_2fr]">
                 <div>
                     <div
                         className={`grid grid-cols-2 divide-x divide-line rounded-lg border ${
@@ -129,6 +135,7 @@ function SearchCard() {
                             label="Departure"
                             selected={fromISODate(departure)}
                             onSelect={(date) => dispatch(setDeparture(toISODate(date)))}
+                            describedBy={errors.departure ? departureErrorId : undefined}
                             className="rounded-l-lg"
                         />
                         <DatePickerField
@@ -137,10 +144,15 @@ function SearchCard() {
                             selected={fromISODate(returnDate)}
                             onSelect={(date) => dispatch(setReturnDate(toISODate(date)))}
                             minDate={fromISODate(departure)}
+                            align="right"
                             className="rounded-r-lg"
                         />
                     </div>
-                    {errors.departure && <p className="mt-1 text-xs text-red-600">{errors.departure}</p>}
+                    {errors.departure && (
+                        <p id={departureErrorId} className="mt-1 text-xs text-red-600">
+                            {errors.departure}
+                        </p>
+                    )}
                 </div>
 
                 <TravellerClassField
@@ -153,7 +165,7 @@ function SearchCard() {
             {/* Row 3: Search */}
             <button
                 type="submit"
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent py-3.5 text-sm font-semibold tracking-wide text-white uppercase transition-colors hover:bg-accent-dark"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent py-3.5 text-sm font-semibold tracking-wide text-white uppercase transition hover:bg-accent-dark active:scale-[0.98]"
             >
                 Search Flights
                 <ArrowUpRight className="size-4" />

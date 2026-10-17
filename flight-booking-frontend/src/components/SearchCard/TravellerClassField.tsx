@@ -87,11 +87,13 @@ function TravellerClassField({ value, onChange, className = '' }: TravellerClass
                 label="Traveller & Class"
                 value={getLabel(value)}
                 onClick={() => setIsOpen((open) => !open)}
+                expanded={isOpen}
                 className={className}
             />
 
             {isOpen && (
-                <div className="absolute top-full right-0 z-30 mt-2 w-80 rounded-xl border border-line bg-surface p-4 shadow-float">
+                <div className="absolute top-full right-0 left-0 z-30 mt-2 rounded-xl border border-line bg-surface
+                p-4 shadow-float sm:left-auto sm:w-80">
                     <p className="mb-1 text-xs font-semibold tracking-wide text-muted uppercase">Travellers</p>
                     <div className="divide-y divide-line">
                         <Counter

@@ -12,13 +12,14 @@ function RouteCard({route, onBook}: RouteCardProps){
     const from = findAirport(route.from)
     const to = findAirport(route.to)
     return(
-        <article className="group rounded-xl bg-surface p-2.5 shadow-card transition duration-300
-        hover:-translate-y-1 hover:shadow-float">
+        <article className="group w-[80%] shrink-0 snap-start rounded-xl bg-surface p-2.5 shadow-card transition duration-300
+        hover:-translate-y-1 hover:shadow-float sm:w-auto">
             <div className="overflow-hidden rounded-lg">
                 <img
                     src={route.image}
                     alt={route.imageAlt}
                     loading="lazy"
+                    decoding="async"
                     className="aspect-2/1 w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
             </div>

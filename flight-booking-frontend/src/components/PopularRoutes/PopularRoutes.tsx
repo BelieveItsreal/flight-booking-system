@@ -13,7 +13,10 @@ function PopularRoutes() {
     return (
         <section aria-label="popular routes" className="relative z-10 -mt-10 pb-12">
             <div className="wrapper">
-                <div className="mx-auto grid max-w-220 grid-cols-3 gap-6">
+                {/* Mobile: swipeable row. scroll-px-4 makes cards snap to the padded edge, not the screen edge;
+                    pt-2/pb-6 give the shadow room, because a scroll container clips everything outside it */}
+                <div className="scrollbar-none -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pt-2 pb-6
+                    sm:mx-auto sm:grid sm:max-w-220 sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pt-0 sm:pb-0 lg:grid-cols-3">
                     {POPULAR_ROUTES.map((route) => (
                         <RouteCard key={route.id} route={route} onBook={handleBook} />
                     ))}

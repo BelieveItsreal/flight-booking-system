@@ -1,3 +1,4 @@
+import type { Ref } from 'react'
 import type { LucideIcon } from 'lucide-react'
 
 interface SearchFieldProps {
@@ -8,14 +9,21 @@ interface SearchFieldProps {
     disabled?: boolean
     className?: string
     onClick: () => void
+    ref?: Ref<HTMLButtonElement>
+    expanded?: boolean       // set when the field opens a popup (date picker, traveller panel)
+    describedBy?: string     // id of the error message, so screen readers read it on focus
 }
 
-function SearchField({icon: Icon, label, value, placeholder, disabled = false, className= '', onClick}: SearchFieldProps) {
+function SearchField({icon: Icon, label, value, placeholder, disabled = false, className= '', onClick, ref, expanded, describedBy}: SearchFieldProps) {
     return(
         <button
+            ref={ref}
             type="button"
             disabled={disabled}
             onClick={onClick}
+            aria-haspopup={expanded === undefined ? undefined : 'dialog'}
+            aria-expanded={expanded}
+            aria-describedby={describedBy}
             className={`flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors
                 hover:bg-subtle disabled:cursor-not-allowed disabled:bg-subtle ${className}`}
         >
