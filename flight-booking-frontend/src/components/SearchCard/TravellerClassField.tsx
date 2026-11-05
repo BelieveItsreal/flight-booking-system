@@ -3,15 +3,10 @@ import { Minus, Plus, User } from 'lucide-react'
 import SearchField from './SearchField.tsx'
 import { useClickOutside } from '../../hooks/useClickOutside.ts'
 import type { CabinClass, Travellers } from '../../store/searchSlice.ts'
+import { formatTravellers } from '../../utils/travellers.ts'
 
 const CABIN_CLASSES: CabinClass[] = ['Economy', 'Business']
 const MAX_TRAVELLERS = 9
-
-// Builds the field text, e.g. "1 Traveller, Economy" or "3 Travellers, Business"
-function getLabel({ adults, children, infants, cabinClass }: Travellers) {
-    const total = adults + children + infants
-    return `${total} Traveller${total > 1 ? 's' : ''}, ${cabinClass}`
-}
 
 interface CounterProps {
     label: string
@@ -85,7 +80,7 @@ function TravellerClassField({ value, onChange, className = '' }: TravellerClass
             <SearchField
                 icon={User}
                 label="Traveller & Class"
-                value={getLabel(value)}
+                value={formatTravellers(value)}
                 onClick={() => setIsOpen((open) => !open)}
                 expanded={isOpen}
                 className={className}
