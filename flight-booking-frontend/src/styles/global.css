@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* ---------- Design tokens → Tailwind classes ---------- */
+@theme {
+    /* Font: font-sans (default for the whole page) */
+    --font-sans: 'Inter', 'Poppins', system-ui, -apple-system, sans-serif;
+
+    /* Colors: bg-primary, text-accent, border-line, etc. */
+    --color-primary: #1a2b6d;        /* navy: logo, headings, swap button */
+    --color-primary-light: #2d3f8f;  /* navy hover */
+    --color-accent: #ff6d38;         /* orange: CTA button, prices */
+    --color-accent-dark: #e85a27;    /* orange hover */
+
+    --color-page: #f4f5f7;           /* light gray backdrop */
+    --color-surface: #ffffff;        /* cards, navbar, main canvas */
+    --color-subtle: #f1f2f4;         /* disabled field (Return) */
+
+    --color-ink: #1c1f2a;            /* main text */
+    --color-muted: #6b7280;          /* labels, descriptions */
+    --color-disabled: #a0a4ad;       /* placeholder like "Add Return" */
+    --color-line: #e3e5ea;           /* input borders */
+
+    /* Big step numbers 1 2 3: text-display */
+    --text-display: 4rem;
+
+    /* Shadows: shadow-card, shadow-float */
+    --shadow-card: 0 4px 16px rgba(16, 24, 40, 0.08);
+    --shadow-float: 0 12px 32px rgba(16, 24, 40, 0.16);  /* search card */
+
+    /* Widths: max-w-canvas, max-w-content */
+    --container-canvas: 1440px;      /* full page width */
+    --container-content: 1140px;     /* inner content width */
+}
+
+/* ---------- Base styles ---------- */
+@layer base {
+    body {
+        @apply bg-page text-ink antialiased;
+    }
+
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-accent;
+    }
+
+    /* Smooth scrolling only for users who haven't asked for reduced motion */
+    @media (prefers-reduced-motion: no-preference) {
+        html {
+            scroll-behavior: smooth;
+        }
+    }
+
+    /* Respect reduced motion everywhere: no slides, lifts or spins */
+    @media (prefers-reduced-motion: reduce) {
+        *, ::before, ::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+/* ---------- Utility: centered content column ---------- */
+@utility wrapper {
+    width: 100%;
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding-inline: 1rem;
+
+    @media (width >= 40rem) {
+        padding-inline: 1.5rem;
+    }
+}
+
+/* ---------- Utility: hide scrollbar but keep scrolling (route carousel) ---------- */
+@utility scrollbar-none {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.rdp-root {
+    .rdp-selected .rdp-day_button {
+        background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    }
+    /* Hover on any available day: very light gray shade */
+    .rdp-day_button:not(:disabled):hover {
+        background-color: var(--color-subtle);
+    }
+
+    --rdp-accent-color: var(--color-primary);              /* selected day, today, arrows */
+    --rdp-accent-background-color: var(--color-subtle);    /* hover background */
+    font-size: 0.875rem;
+
+    /* Smaller day cells on phones so the calendar fits a 320px screen */
+    @media (width < 40rem) {
+        --rdp-day-width: 36px;
+        --rdp-day-height: 36px;
+        --rdp-day_button-width: 34px;
+        --rdp-day_button-height: 34px;
+    }
+}

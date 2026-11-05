@@ -40,3 +40,8 @@ setting.json
 ### Secrets ###
 .env
 application.properties
+
+### Frontend ###
+flight-booking-frontend/node_modules/
+flight-booking-frontend/dist/
+flight-booking-frontend/.env*

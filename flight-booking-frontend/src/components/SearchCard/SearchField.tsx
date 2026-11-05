@@ -1,0 +1,43 @@
+import type { Ref } from 'react'
+import type { LucideIcon } from 'lucide-react'
+
+interface SearchFieldProps {
+    icon: LucideIcon
+    label: string
+    value: string
+    placeholder?: string
+    disabled?: boolean
+    className?: string
+    onClick: () => void
+    ref?: Ref<HTMLButtonElement>
+    expanded?: boolean       // set when the field opens a popup (date picker, traveller panel)
+    describedBy?: string     // id of the error message, so screen readers read it on focus
+}
+
+function SearchField({icon: Icon, label, value, placeholder, disabled = false, className= '', onClick, ref, expanded, describedBy}: SearchFieldProps) {
+    return(
+        <button
+            ref={ref}
+            type="button"
+            disabled={disabled}
+            onClick={onClick}
+            aria-haspopup={expanded === undefined ? undefined : 'dialog'}
+            aria-expanded={expanded}
+            aria-describedby={describedBy}
+            className={`flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors
+                hover:bg-subtle disabled:cursor-not-allowed disabled:bg-subtle ${className}`}
+        >
+            <Icon className={`size-5 shrink-0 ${disabled? 'text-disabled' : 'text-primary'}`}/>
+            <span className="flex min-w-0 flex-col">
+                <span className="text-xs text-muted">{label}</span>
+                {value ? (
+                    <span className="truncate text-[15px] font-medium text-ink">{value}</span>
+                ):(
+                    <span className="truncate text-[15px] text-disabled">{placeholder}</span>
+                )}
+            </span>
+        </button>
+    )
+}
+
+export default SearchField
