@@ -1,6 +1,7 @@
 import {findAirport, type Airport} from "../data/airports.ts";
 import {toISODate} from "../utils/date.ts";
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
+import type { SearchQuery } from '../utils/searchParams.ts'
 
 export type CabinClass = 'Economy' | 'Business'
 
@@ -62,11 +63,19 @@ const searchSlice = createSlice({
             state.from = action.payload.from
             state.to= action.payload.to
         },
+        loadSearch(state, action: PayloadAction<SearchQuery>) {
+            const {from, to, departure, returnDate, adults, children, infants, cabinClass} = action.payload
+            state.from = findAirport(from)
+            state.to = findAirport(to)
+            state.departure = departure
+            state.returnDate = returnDate
+            state.travellers = {adults, children, infants, cabinClass}
+        },
     },
 })
 
 export const { setFrom, setTo, swapCities,
     setDeparture, setReturnDate, setTravellers,
-    setRoute
+    setRoute, loadSearch
 } = searchSlice.actions
 export default searchSlice.reducer

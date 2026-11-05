@@ -32,8 +32,11 @@ function validateSearch({ from, to, departure }: SearchInput): SearchErrors {
     if (!departure) errors.departure = 'Please select a departure date'
     return errors
 }
+interface SearchCardProps{
+    onSearch?: () => void
+}
 
-function SearchCard() {
+function SearchCard({ onSearch }: SearchCardProps) {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
@@ -79,6 +82,7 @@ function SearchCard() {
         if (returnDate) params.set('return', returnDate)
 
         navigate(`/search?${params}`)
+        onSearch?.()
     }
 
     return (

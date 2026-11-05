@@ -1,27 +1,37 @@
 import { useRef, useState, type KeyboardEvent } from 'react'
-import { Link, NavLink, type NavLinkRenderProps } from 'react-router'
+import { Link, NavLink, useLocation } from 'react-router'
 import { Menu, X } from 'lucide-react'
 import airplane from "../../assets/illustrations/airplane.svg";
 import UserMenu from "./UserMenu.tsx";
 import { useClickOutside } from '../../hooks/useClickOutside.ts'
 
-const NAV_LINKS = [
-    {to: '/', label: 'Flights'},
+interface NavItem {
+    to: string
+    label: string
+    alsoActiveOn?: string[]   // other pages that belong to this tab
+}
+
+const NAV_LINKS: NavItem[] = [
+    {to: '/', label: 'Flights', alsoActiveOn: ['/search']},
     {to: '/my-bookings', label: 'My Bookings'},
     {to: '/offers', label: 'Offers'},
     {to: '/support', label: 'Support'},
 ]
-const desktopLinkClass = ({isActive}: NavLinkRenderProps) =>
+const desktopLinkClass = (isActive: boolean) =>
     `relative flex h-full items-center text-[15px] font-medium transition-colors
     after:absolute after:inset-x-0 after:bottom-0 after:h-0.75 after:rounded-t after:bg-primary after:transition-transform
     ${isActive
         ? 'text-primary after:scale-x-100'
         : 'text-ink hover:text-primary after:scale-x-0 hover:after:scale-x-100'}`
-const mobileLinkClass = ({ isActive }: NavLinkRenderProps) =>
+const mobileLinkClass = (isActive: boolean) =>
     `block rounded-lg px-3 py-3 text-base font-medium transition-colors
     ${isActive ? 'bg-subtle text-primary' : 'text-ink hover:bg-subtle hover:text-primary'}`
 function Navbar() {
     const[isMenuOpen, setIsMenuOpen] = useState(false)
+    const { pathname } = useLocation()
+    // NavLink only knows its own path; this also lights up "Flights" on /search
+    const isLinkActive = (link: NavItem, isActive: boolean) =>
+        isActive || (link.alsoActiveOn?.includes(pathname) ?? false)
     const headerRef = useRef<HTMLElement>(null)
     const toggleRef = useRef<HTMLButtonElement>(null)
     const closeMenu = () => setIsMenuOpen(false)
@@ -45,7 +55,7 @@ function Navbar() {
                 </Link>
                 <nav aria-label="Main" className="hidden h-full items-center gap-6 md:flex lg:gap-10">
                     {NAV_LINKS.map((link) => (
-                        <NavLink key={link.to} to={link.to} end={link.to === '/'} className={desktopLinkClass}>
+                        <NavLink key={link.to} to={link.to} end={link.to === '/'} className={({ isActive }) => desktopLinkClass(isLinkActive(link, isActive))}>
                             {link.label}
                         </NavLink>
                     ))}
@@ -85,7 +95,7 @@ function Navbar() {
                                     to={link.to}
                                     end={link.to === '/'}
                                     onClick={closeMenu}
-                                    className={mobileLinkClass}
+                                    className={({ isActive }) => mobileLinkClass(isLinkActive(link, isActive))}
                                 >
                                     {link.label}
                                 </NavLink>
